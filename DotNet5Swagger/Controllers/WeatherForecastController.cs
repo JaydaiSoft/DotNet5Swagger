@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DotNet5Swagger.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -34,6 +34,16 @@ namespace DotNet5Swagger.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        /// <summary>
+        /// API Health check
+        /// </summary>
+        /// <returns>200 OK</returns>
+        [HttpGet, Route("healthcheck")]
+        public ActionResult IsAlive()
+        {
+            return Ok("Service is healthy");
         }
     }
 }
