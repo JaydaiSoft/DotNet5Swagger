@@ -22,11 +22,20 @@ namespace DotNet5Swagger
         }
 
         public IConfiguration Configuration { get; }
+        private readonly string _policyName = "CorsPolicy";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy(name: _policyName, builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -40,13 +49,16 @@ namespace DotNet5Swagger
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DotNet5Swagger v1"));
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DotNet5Swagger v1"));
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(_policyName);
 
             app.UseAuthorization();
 
